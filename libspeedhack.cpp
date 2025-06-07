@@ -330,17 +330,13 @@ static void init_libspeedhack()
 	the_mutex = new mutex;
 	gettimeofday_orig = decltype(gettimeofday_orig)(dlsym(RTLD_NEXT,"gettimeofday"));
 	clock_gettime_orig = decltype(clock_gettime_orig)(dlsym(RTLD_NEXT,"clock_gettime"));
-	
-	FILE* efile;
-	int fd;
-
-	std::string home = getenv("HOME");
-	std::string log_path = home + "/.config/speedhack_log";
-	std::string pipe_path = home + "/.config/speedhack_pipe";
-
-	efile = fopen(log_path.c_str(), "a");
-	fd = open(pipe_path.c_str(), O_RDONLY | O_NONBLOCK);
-	
+	const char *home = getenv("HOME");
+	char log_path[512];
+	char pipe_path[512];
+	snprintf(log_path, sizeof(log_path), "%s/.config/speedhack_log", home);
+	snprintf(pipe_path, sizeof(pipe_path), "%s/.config/speedhack_pipe", home);
+	efile = fopen(log_path, "a");
+	fd = open(pipe_path, O_RDONLY | O_NONBLOCK);
 	fix_timescale();
 }
 
